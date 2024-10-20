@@ -15,6 +15,21 @@ public class ClientHandler implements Runnable {
         this.dbManager = dbManager;
     }
 
+    void register(String[] req_parts, PrintWriter out) {
+        String email = req_parts[1];
+        String password = req_parts[2];
+        String result = dbManager.addUser(email, password);
+        out.println(result);
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() + " Сообщение: " + result);
+    }
+    void login(String[] req_parts, PrintWriter out) {
+        String email = req_parts[1];
+        String password = req_parts[2];
+        String result = dbManager.findUser(email, password);
+        out.println(result);
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() + " Сообщение: " + result);
+    }
+
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -23,13 +38,10 @@ public class ClientHandler implements Runnable {
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 String[] parts = inputLine.split(";");
-                if (parts[0].equals("register")) {
-                    String email = parts[1];
-                    String password = parts[2];
-                    String result = dbManager.addUser(email, password);
-                    out.println(result);
-                    System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() + " Сообщение: " + result);
-                }
+                if (parts[0].equals("register"))
+                    register(parts, out);
+                if (parts[0].equals("login"))
+                    login(parts, out);
             }
         } catch (IOException e) {
             System.out.println("Отключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());

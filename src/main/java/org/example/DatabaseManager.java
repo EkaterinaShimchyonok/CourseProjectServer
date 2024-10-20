@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseManager {
     public static Connection connection = null;
@@ -55,6 +52,41 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             return "ошибка Не удалось зарегистрироваться.";
+        }
+    }
+    public String findUser(String email, String password) {
+        {
+            String sql = "SELECT * FROM User WHERE email = ? AND password = ?";
+
+            try {
+                connection.setAutoCommit(false); // Включение транзакции
+                Savepoint point1 = connection.setSavepoint("Savepoint1");
+                try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                    pstmt.setString(1, email);
+                    pstmt.setString(2, password);
+                    ResultSet rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        // Если пользователь найден, возвращаем данные пользователя (например, email и роль)
+                        String foundEmail = rs.getString("email");
+                        int role = rs.getInt("admin");
+                        connection.commit(); // Коммит транзакции
+                        connection.setAutoCommit(true);
+                        return "Пользователь найден: " + foundEmail + " с ролью " + role;
+                    } else {
+                        connection.commit(); // Коммит транзакции
+                        connection.setAutoCommit(true);
+                        return "Пользователь с email " + email + " и указанным паролем не найден.";
+                    }
+                } catch (SQLException e) {
+                    connection.rollback(point1); // Откат транзакции при ошибке
+                    connection.commit();
+                    connection.setAutoCommit(true);
+                    return "Ошибка при поиске пользователя: " + e.getMessage();
+                }
+            } catch (SQLException e) {
+                return "Ошибка: Не удалось выполнить поиск.";
+            }
         }
     }
 }
