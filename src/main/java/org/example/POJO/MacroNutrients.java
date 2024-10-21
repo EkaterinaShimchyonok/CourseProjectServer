@@ -7,12 +7,17 @@ public class MacroNutrients {
     double fats;
     double carbs;
 
-    public MacroNutrients(double calories, double proteins, double fats, double carbs) {
+    public MacroNutrients() {
+    }
+
+    public MacroNutrients(int id, double calories, double proteins, double fats, double carbs) {
+        this.macronID = id;
         this.calories = calories;
         this.proteins = proteins;
         this.fats = fats;
         this.carbs = carbs;
     }
+
     public int getMacronID() {
         return macronID;
     }

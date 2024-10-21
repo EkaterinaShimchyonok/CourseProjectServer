@@ -9,7 +9,9 @@ public class Vitamins {
     double c;
     double b12;
 
-    public Vitamins(double a, double d, double e, double c, double k, double b12) {
+    public Vitamins() {}
+    public Vitamins(int vitaminsID, double a, double d, double e, double c, double k, double b12) {
+        this.vitaminsID = vitaminsID;
         this.a = a;
         this.d = d;
         this.e = e;
