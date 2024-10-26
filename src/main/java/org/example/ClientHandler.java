@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler implements Runnable {
-    private final Socket clientSocket; //только для подключения и закрытия соединения
-
+    private final Socket clientSocket; // только для подключения и закрытия соединения
     UserAction uact = new UserAction();
     CategoryAction cact = new CategoryAction();
     ProductAction pact = new ProductAction();
@@ -35,16 +35,25 @@ public class ClientHandler implements Runnable {
         if (user.getUserID() != 0) {
             String userJson = new Gson().toJson(user);
             out.println(userJson);
-        } else
+        } else {
             out.println("Не удалось войти в систему. Попробуйте ещё раз");
+        }
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() + " Вход в систему: " + req_parts[1]);
+    }
+
+    void fetchAllUsers(PrintWriter out) {
+        List<User> users = uact.fetchAll();
+        users.forEach(user -> {
+            System.out.println( user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName());
+            String userString = user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName();
+            out.println(userString);
+        });
     }
 
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 String[] parts = inputLine.split(";");
@@ -52,6 +61,8 @@ public class ClientHandler implements Runnable {
                     register(parts, out);
                 if (parts[0].equals("login"))
                     login(parts, out);
+                if (parts[0].equals("userfetchall"))
+                    fetchAllUsers(out);
             }
         } catch (IOException e) {
             System.out.println("Отключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());

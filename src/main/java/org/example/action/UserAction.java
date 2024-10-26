@@ -76,7 +76,7 @@ public class UserAction {
         }
     }
 
-    public void fetchAll() {
+    public List<User> fetchAll() {
         List<User> userList = dao.fetchAll();
         if (userList.isEmpty()) {
             System.out.println("Запись не найдена");
@@ -86,5 +86,6 @@ public class UserAction {
                 System.out.println(user);
             }
         }
+        return userList;
     }
 }

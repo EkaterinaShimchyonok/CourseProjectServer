@@ -51,8 +51,6 @@ public class UserDao {
     }
 
 
-
-
     public int update(User user) {
         con = DatabaseManager.getInstance();
         try {
