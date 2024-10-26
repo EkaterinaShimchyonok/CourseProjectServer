@@ -6,7 +6,11 @@ public class Nutrients {
     Vitamins vitamins;
     Minerals minerals;
 
-    public Nutrients(){}
+    public Nutrients(){
+        this.macroNutrients = new MacroNutrients();
+        this.vitamins = new Vitamins();
+        this.minerals = new Minerals();
+    }
     public Nutrients(int id, MacroNutrients macroNutrients, Vitamins vitamins, Minerals minerals) {
         this.nutrientsID = id;
         this.macroNutrients = macroNutrients;

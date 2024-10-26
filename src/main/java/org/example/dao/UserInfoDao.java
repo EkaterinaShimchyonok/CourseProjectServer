@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.UserInfo;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserInfoDao {
     Connection con = null;
@@ -17,9 +14,10 @@ public class UserInfoDao {
 
     public int insert(UserInfo user) {
         con = DatabaseManager.getInstance();
+        Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         try {
-            String query = "insert into UserInfo(name, age, is_male, height, weight, activity_level, goal) " +
-                    "values(?,?,?,?,?,?,?)";
+            int normID = nuDao.insertNorm(user.getNorm());
+            String query = "insert into UserInfo(name, age, is_male, height, weight, activity_level, goal, norm_id) values(?,?,?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
             ps.setString(1, user.getName());
             ps.setInt(2, user.getAge());
@@ -28,24 +26,32 @@ public class UserInfoDao {
             ps.setDouble(5, user.getWeight());
             ps.setInt(6, user.getActivityLevel());
             ps.setDouble(7, user.getGoal());
+            ps.setInt(8, normID);
             st = ps.executeUpdate();
-            System.out.println("inserted user info " + st);
+
+            // Используем отдельный Statement для получения последнего вставленного идентификатора
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT last_insert_rowid() AS id");
+            if (rs.next()) {
+                user.setUinfoID(rs.getInt("id"));
+            }
         } catch (NoClassDefFoundError e) {
-            st = -1;
             e.printStackTrace();
         } catch (Exception e) {
-            st = -2;
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (stmt != null) stmt.close(); // Закрываем Statement
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
-        return st;
+        return user.getUinfoID();
     }
+
+
 
     public int update(UserInfo user) {
         con = DatabaseManager.getInstance();

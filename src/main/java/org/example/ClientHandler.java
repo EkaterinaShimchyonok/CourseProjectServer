@@ -32,7 +32,7 @@ public class ClientHandler implements Runnable {
 
     void login(String[] req_parts, PrintWriter out) {
         User user = uact.fetchByEmailPassw(req_parts[1], req_parts[2]);
-        if (user != null) {
+        if (user.getUserID() != 0) {
             String userJson = new Gson().toJson(user);
             out.println(userJson);
         } else

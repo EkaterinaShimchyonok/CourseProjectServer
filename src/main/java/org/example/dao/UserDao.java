@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +17,9 @@ public class UserDao {
 
     public int insert(User user) {
         con = DatabaseManager.getInstance();
+        Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         try {
             int userInfoID = userInfoDao.insert(user.getInfo());
-
             String query = "insert into User(email, password, is_admin, uinfo_id) values(?,?,?,?)";
             ps = con.prepareStatement(query);
             ps.setString(1, user.getEmail());
@@ -30,13 +27,21 @@ public class UserDao {
             ps.setBoolean(3, user.isAdmin());
             ps.setInt(4, userInfoID);
             st = ps.executeUpdate();
-            System.out.println("inserted user info " + st);
+
+            // Используем отдельный Statement для получения последнего вставленного идентификатора
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT last_insert_rowid() AS id");
+            if (rs.next()) {
+                user.setUserID(rs.getInt("id"));
+            }
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) rs.close();
                 if (ps != null) ps.close();
+                if (stmt != null) stmt.close(); // Закрываем Statement
                 if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
@@ -44,6 +49,9 @@ public class UserDao {
         }
         return st;
     }
+
+
+
 
     public int update(User user) {
         con = DatabaseManager.getInstance();

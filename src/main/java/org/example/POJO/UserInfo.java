@@ -11,7 +11,9 @@ public class UserInfo {
     double goal;
     Nutrients norm;
 
-    public UserInfo() {}
+    public UserInfo() {
+        this.norm = new Nutrients();
+    }
     public UserInfo(int uinfoID, String name, int age, boolean male, double h, double w, int activity, double g, Nutrients norm) {
         this.uinfoID = uinfoID;
         this.name = name;

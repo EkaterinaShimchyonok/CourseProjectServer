@@ -16,6 +16,7 @@ public class User {
     }
 
     public User() {
+        this.info = new UserInfo();
     }
 
     public User(String email, String password, boolean admin) {
@@ -23,7 +24,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.admin = admin;
-//        this.info = info;
+        this.info = new UserInfo();
     }
     public User(String email, String password)
     {

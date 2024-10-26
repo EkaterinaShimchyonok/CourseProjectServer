@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.MacroNutrients;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MacroNutrientsDao {
     Connection con = null;
@@ -16,6 +13,8 @@ public class MacroNutrientsDao {
 
     public int insert(MacroNutrients macroNutrients) {
         con = DatabaseManager.getInstance();
+        Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
+        int newId = -1; // Инициализация переменной для возвращаемого ID
         try {
             String query = "insert into MacroNutrients(calories, proteins, fats, carbs) values(?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -23,21 +22,29 @@ public class MacroNutrientsDao {
             ps.setDouble(2, macroNutrients.getProteins());
             ps.setDouble(3, macroNutrients.getFats());
             ps.setDouble(4, macroNutrients.getCarbs());
-            st = ps.executeUpdate();
-            System.out.println("inserted macronutrients info " + st);
+            ps.executeUpdate();
+
+            // Используем отдельный Statement для получения последнего вставленного идентификатора
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT last_insert_rowid() AS id");
+            if (rs.next()) {
+                newId = rs.getInt("id");
+                macroNutrients.setMacronID(newId); // Устанавливаем сгенерированный идентификатор в поле macroNutrients
+            }
         } catch (Exception e) {
-            st = -2;
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (stmt != null) stmt.close(); // Закрываем Statement
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
-        return st;
+        return newId;
     }
+
 
     public int update(MacroNutrients macroNutrients) {
         con = DatabaseManager.getInstance();

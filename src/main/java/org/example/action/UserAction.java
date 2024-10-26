@@ -2,8 +2,6 @@ package org.example.action;
 
 import org.example.dao.UserDao;
 import org.example.POJO.User;
-
-import java.io.PrintWriter;
 import java.util.List;
 
 public class UserAction {

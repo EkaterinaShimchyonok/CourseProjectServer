@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.Vitamins;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class VitaminsDao {
     Connection con = null;
@@ -16,6 +13,8 @@ public class VitaminsDao {
 
     public int insert(Vitamins vitamins) {
         con = DatabaseManager.getInstance();
+        Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
+        int newId = -1; // Инициализация переменной для возвращаемого ID
         try {
             String query = "INSERT INTO Vitamins(a, d, e, k, c, b12) VALUES(?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -25,21 +24,30 @@ public class VitaminsDao {
             ps.setDouble(4, vitamins.getK());
             ps.setDouble(5, vitamins.getC());
             ps.setDouble(6, vitamins.getB12());
-            st = ps.executeUpdate();
-            System.out.println("Inserted vitamins info: " + st);
+            ps.executeUpdate();
+
+            // Используем отдельный Statement для получения последнего вставленного идентификатора
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT last_insert_rowid() AS id");
+            if (rs.next()) {
+                newId = rs.getInt("id");
+                vitamins.setVitaminsID(newId); // Устанавливаем сгенерированный идентификатор в поле vitamins
+            }
         } catch (Exception e) {
-            st = -2;
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (stmt != null) stmt.close(); // Закрываем Statement
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
-        return st;
+        return newId;
     }
+
+
 
     public int update(Vitamins vitamins) {
         con = DatabaseManager.getInstance();

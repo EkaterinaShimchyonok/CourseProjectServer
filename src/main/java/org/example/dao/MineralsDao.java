@@ -3,10 +3,7 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.Minerals;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MineralsDao {
     Connection con = null;
@@ -16,6 +13,8 @@ public class MineralsDao {
 
     public int insert(Minerals minerals) {
         con = DatabaseManager.getInstance();
+        Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
+        int newId = -1; // Инициализация переменной для возвращаемого ID
         try {
             String query = "insert into Minerals(ca, fe, mg, zn, cu, se) values(?,?,?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -25,21 +24,30 @@ public class MineralsDao {
             ps.setDouble(4, minerals.getZn());
             ps.setDouble(5, minerals.getCu());
             ps.setDouble(6, minerals.getSe());
-            st = ps.executeUpdate();
-            System.out.println("inserted minerals info " + st);
+            ps.executeUpdate();
+
+            // Используем отдельный Statement для получения последнего вставленного идентификатора
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT last_insert_rowid() AS id");
+            if (rs.next()) {
+                newId = rs.getInt("id");
+                minerals.setMineralsID(newId); // Устанавливаем сгенерированный идентификатор в поле minerals
+            }
         } catch (Exception e) {
-            st = -2;
             e.printStackTrace();
         } finally {
             try {
+                if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
+                if (stmt != null) stmt.close(); // Закрываем Statement
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
-        return st;
+        return newId;
     }
+
+
 
     public int update(Minerals minerals) {
         con = DatabaseManager.getInstance();
