@@ -2,19 +2,20 @@ package org.example.POJO;
 
 public class Product {
     int productID;
+    Category category;
     String name;
     boolean isCoocked;
-    String image;
     String categoryName;
     Nutrients nutrients;
 
-    public Product(int id, String name, boolean isCoocked, String image, String categoryName, Nutrients nutrients) {
+    public Product(){}
+    public Product(int id, Category category, String name, boolean isCoocked, String categoryName, Nutrients nutrients) {
         this.productID = id;
         this.name = name;
         this.isCoocked = isCoocked;
-        this.image = image;
         this.categoryName = categoryName;
         this.nutrients = nutrients;
+        this.category = category;
     }
 
     public int getProductID() {
@@ -41,14 +42,6 @@ public class Product {
         isCoocked = coocked;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getCategoryName() {
         return categoryName;
     }
@@ -63,5 +56,13 @@ public class Product {
 
     public void setNutrients(Nutrients nutrients) {
         this.nutrients = nutrients;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

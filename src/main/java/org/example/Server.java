@@ -8,10 +8,8 @@ import java.net.SocketException;
 
 public class Server {
     private static final int PORT = 5000;
-    private DatabaseManager dbManager;
 
-    public Server(DatabaseManager dbManager) {
-        this.dbManager = dbManager;
+    public Server() {
     }
 
     public void start() {
@@ -23,7 +21,7 @@ public class Server {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Подключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
-                new Thread(new ClientHandler(clientSocket, dbManager)).start();
+                new Thread(new ClientHandler(clientSocket)).start();
             }
         } catch (SocketException e) {
             System.out.println("Клиент оборвал соединение: " + e.getMessage());

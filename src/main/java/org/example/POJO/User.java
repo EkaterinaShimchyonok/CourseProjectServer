@@ -15,13 +15,20 @@ public class User {
         this.userID = userID;
     }
 
-    public User(){}
-    public User(int userID, String email, String password, boolean admin, UserInfo info) {
-        this.userID = userID;
+    public User() {
+    }
+
+    public User(String email, String password, boolean admin) {
+//        this.userID = userID;
         this.email = email;
         this.password = password;
         this.admin = admin;
-        this.info = info;
+//        this.info = info;
+    }
+    public User(String email, String password)
+    {
+        this.email = email;
+        this.password = password;
     }
 
     public String getEmail() {
@@ -31,6 +38,8 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() { return password; }
 
     public void setPassword(String password) {
         this.password = password;
