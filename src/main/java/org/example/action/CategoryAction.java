@@ -71,4 +71,17 @@ public class CategoryAction {
             }
         }
     }
+
+    public List<String> fetchCategoryNames() {
+        List<String> categoryNames = dao.fetchCategoryNames();
+        if (categoryNames.isEmpty()) {
+            System.out.println("Категории не найдены.");
+        } else {
+            System.out.println("Названия категорий:");
+            for (String name : categoryNames) {
+                System.out.println(name);
+            }
+        }
+        return categoryNames;
+    }
 }

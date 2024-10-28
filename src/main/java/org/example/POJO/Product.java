@@ -4,16 +4,14 @@ public class Product {
     int productID;
     Category category;
     String name;
-    boolean isCoocked;
-    String categoryName;
+    boolean isCooked;
     Nutrients nutrients;
 
     public Product(){}
     public Product(int id, Category category, String name, boolean isCoocked, String categoryName, Nutrients nutrients) {
         this.productID = id;
         this.name = name;
-        this.isCoocked = isCoocked;
-        this.categoryName = categoryName;
+        this.isCooked = isCoocked;
         this.nutrients = nutrients;
         this.category = category;
     }
@@ -34,20 +32,12 @@ public class Product {
         this.name = name;
     }
 
-    public boolean isCoocked() {
-        return isCoocked;
+    public boolean getIsCooked() {
+        return isCooked;
     }
 
-    public void setCoocked(boolean coocked) {
-        isCoocked = coocked;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setIsCooked(boolean coocked) {
+        isCooked = coocked;
     }
 
     public Nutrients getNutrients() {

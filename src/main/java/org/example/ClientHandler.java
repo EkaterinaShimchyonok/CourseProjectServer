@@ -1,6 +1,7 @@
 package org.example;
 
 import com.google.gson.Gson;
+import org.example.POJO.Product;
 import org.example.POJO.User;
 import org.example.action.CategoryAction;
 import org.example.action.ProductAction;
@@ -50,6 +51,24 @@ public class ClientHandler implements Runnable {
         });
     }
 
+    void fetchCategoryProducts(String category, PrintWriter out) {
+        List<Product> products;
+        if(category.equals("Все")) products = pact.fetchAll();
+        else products = pact.fetchByCategory(category);
+        Gson gson = new Gson();
+        products.forEach(product -> {
+            String productJson = gson.toJson(product);
+            out.println(productJson);
+        });
+        out.println("end"); // Указываем конец передачи
+    }
+
+    void fetchCategoriesNames(PrintWriter out) {
+        List<String> categoryNames = cact.fetchCategoryNames();
+        categoryNames.forEach(out::println);
+        out.println("end");
+    }
+
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -63,6 +82,10 @@ public class ClientHandler implements Runnable {
                     login(parts, out);
                 if (parts[0].equals("userfetchall"))
                     fetchAllUsers(out);
+                if (parts[0].equals("productfetchcat"))
+                    fetchCategoryProducts(parts[1],out);
+                if (parts[0].equals("categoryfetchnames"))
+                    fetchCategoriesNames(out);
             }
         } catch (IOException e) {
             System.out.println("Отключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());

@@ -13,6 +13,6 @@ public class ServerApp {
         Server server = new Server();
         server.start();
 
-        //DatabaseManager.close();
+        DatabaseManager.close();
     }
 }

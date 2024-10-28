@@ -139,6 +139,29 @@ public class CategoryDao {
         }
         return categories;
     }
+    public List<String> fetchCategoryNames() {
+        List<String> categoryNames = new ArrayList<>();
+        con = DatabaseManager.getInstance();
+        try {
+            String query = "select name from Category";
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                categoryNames.add(rs.getString("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return categoryNames;
+    }
 
     public List<Category> fetchByName(String name) {
         List<Category> categories = new ArrayList<>();
