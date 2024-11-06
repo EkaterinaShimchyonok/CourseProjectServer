@@ -1,5 +1,4 @@
 package org.example;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -9,8 +8,7 @@ import java.net.SocketException;
 public class Server {
     private static final int PORT = 5000;
 
-    public Server() {
-    }
+    public Server() {}
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -20,7 +18,8 @@ public class Server {
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Подключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());
+                System.out.println("Подключился клиент " + clientSocket.getInetAddress() +
+                        ":" + clientSocket.getPort());
                 new Thread(new ClientHandler(clientSocket)).start();
             }
         } catch (SocketException e) {

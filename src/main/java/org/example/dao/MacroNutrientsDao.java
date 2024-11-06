@@ -57,7 +57,6 @@ public class MacroNutrientsDao {
             ps.setDouble(4, macroNutrients.getCarbs());
             ps.setInt(5, macroNutrients.getMacronID());
             st = ps.executeUpdate();
-            System.out.println("updated macronutrients info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

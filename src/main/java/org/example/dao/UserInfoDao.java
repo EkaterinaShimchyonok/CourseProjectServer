@@ -67,7 +67,6 @@ public class UserInfoDao {
             ps.setInt(6, user.getActivityLevel());
             ps.setDouble(7, user.getGoal());
             ps.setInt(8, user.getUinfoID());
-            System.out.println("updated user " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

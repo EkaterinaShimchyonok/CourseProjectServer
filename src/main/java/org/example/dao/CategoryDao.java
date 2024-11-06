@@ -48,7 +48,6 @@ public class CategoryDao {
             ps.setString(2, category.getImage());
             ps.setInt(3, category.getCategoryID());
             st = ps.executeUpdate();
-            System.out.println("updated category info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();
@@ -163,8 +162,8 @@ public class CategoryDao {
         return categoryNames;
     }
 
-    public List<Category> fetchByName(String name) {
-        List<Category> categories = new ArrayList<>();
+    public Category fetchByName(String name) {
+        Category category = new Category();
         con = DatabaseManager.getInstance();
         try {
             String query = "select * from Category where name = ?";
@@ -172,11 +171,9 @@ public class CategoryDao {
             ps.setString(1, name);
             rs = ps.executeQuery();
             if (rs.next()) {
-                Category category = new Category();
                 category.setCategoryID(rs.getInt("category_id"));
                 category.setName(rs.getString("name"));
                 category.setImage(rs.getString("image"));
-                categories.add(category);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,6 +186,6 @@ public class CategoryDao {
                 ex.printStackTrace();
             }
         }
-        return categories;
+        return category;
     }
 }

@@ -62,7 +62,6 @@ public class MineralsDao {
             ps.setDouble(6, minerals.getSe());
             ps.setInt(7, minerals.getMineralsID());
             st = ps.executeUpdate();
-            System.out.println("updated minerals info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

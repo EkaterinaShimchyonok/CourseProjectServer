@@ -49,14 +49,9 @@ public class CategoryAction {
     }
 
     public void fetchByName(String name) {
-        List<Category> categoryList = dao.fetchByName(name);
-        if (categoryList.isEmpty()) {
+        Category category = dao.fetchByName(name);
+        if (category == null) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные категорий:");
-            for (Category category : categoryList) {
-                System.out.println(category);
-            }
         }
     }
 
@@ -64,11 +59,6 @@ public class CategoryAction {
         List<Category> categoryList = dao.fetchAll();
         if (categoryList.isEmpty()) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные категорий:");
-            for (Category category : categoryList) {
-                System.out.println(category);
-            }
         }
     }
 
@@ -76,11 +66,6 @@ public class CategoryAction {
         List<String> categoryNames = dao.fetchCategoryNames();
         if (categoryNames.isEmpty()) {
             System.out.println("Категории не найдены.");
-        } else {
-            System.out.println("Названия категорий:");
-            for (String name : categoryNames) {
-                System.out.println(name);
-            }
         }
         return categoryNames;
     }

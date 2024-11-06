@@ -41,9 +41,6 @@ public class UserAction {
         User user = dao.fetchById(id);
         if (user.getUserID() == 0) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные пользователя:");
-            System.out.println(user);
         }
     }
 
@@ -51,11 +48,6 @@ public class UserAction {
         List<User> userList = dao.fetchByName(name);
         if (userList.isEmpty()) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные пользователей:");
-            for (User user : userList) {
-                System.out.println(user);
-            }
         }
     }
 
@@ -68,11 +60,6 @@ public class UserAction {
         List<User> userList = dao.fetchByAdmin(admin);
         if (userList.isEmpty()) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные пользователей:");
-            for (User user : userList) {
-                System.out.println(user);
-            }
         }
     }
 
@@ -80,11 +67,6 @@ public class UserAction {
         List<User> userList = dao.fetchAll();
         if (userList.isEmpty()) {
             System.out.println("Запись не найдена");
-        } else {
-            System.out.println("Данные пользователей:");
-            for (User user : userList) {
-                System.out.println(user);
-            }
         }
         return userList;
     }

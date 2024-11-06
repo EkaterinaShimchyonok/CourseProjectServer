@@ -91,7 +91,6 @@ public class NutrientsDao {
             vitaminsDao.update(nutrients.getVitamins());
             mineralsDao.update(nutrients.getMinerals());
             st = 1;
-            System.out.println("updated nutrients info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

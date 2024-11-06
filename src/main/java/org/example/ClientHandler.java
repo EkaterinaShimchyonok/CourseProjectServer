@@ -16,7 +16,7 @@ import java.util.List;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket; // только для подключения и закрытия соединения
-    UserAction uact = new UserAction();
+    public UserAction uact = new UserAction();
     CategoryAction cact = new CategoryAction();
     ProductAction pact = new ProductAction();
 
@@ -24,7 +24,7 @@ public class ClientHandler implements Runnable {
         this.clientSocket = clientSocket;
     }
 
-    void register(String[] req_parts, PrintWriter out) {
+    public void register(String[] req_parts, PrintWriter out) {
         User user = new User(req_parts[1], req_parts[2], false);
         String result = uact.insert(user);
         out.println(result);
@@ -53,8 +53,10 @@ public class ClientHandler implements Runnable {
 
     void fetchCategoryProducts(String category, PrintWriter out) {
         List<Product> products;
-        if(category.equals("Все")) products = pact.fetchAll();
-        else products = pact.fetchByCategory(category);
+        if(category.equals("Все"))
+            products = pact.fetchAll();
+        else
+            products = pact.fetchByCategory(category);
         Gson gson = new Gson();
         products.forEach(product -> {
             String productJson = gson.toJson(product);
@@ -67,6 +69,28 @@ public class ClientHandler implements Runnable {
         List<String> categoryNames = cact.fetchCategoryNames();
         categoryNames.forEach(out::println);
         out.println("end");
+    }
+
+    void updateProduct(String jsonProduct, PrintWriter out) {
+        Gson gson = new Gson();
+        Product product = gson.fromJson(jsonProduct, Product.class);
+        System.out.println(jsonProduct);
+        out.println(pact.update(product));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Изменение продукта " + product.getProductID());
+    }
+    void addProduct(String jsonProduct, PrintWriter out) {
+        Gson gson = new Gson();
+        Product product = gson.fromJson(jsonProduct, Product.class);
+        System.out.println(jsonProduct);
+        out.println(pact.insert(product));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Добавление продукта " + product.getProductID());
+    }
+    void deleteProduct(String id, PrintWriter out) {
+        out.println(pact.delete(Integer.parseInt(id)));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Изменение продукта " + id);
     }
 
     @Override
@@ -84,8 +108,15 @@ public class ClientHandler implements Runnable {
                     fetchAllUsers(out);
                 if (parts[0].equals("productfetchcat"))
                     fetchCategoryProducts(parts[1],out);
+                if (parts[0].equals("productupdate"))
+                    updateProduct(parts[1],out);
+                if (parts[0].equals("productdelete"))
+                    deleteProduct(parts[1],out);
+                if (parts[0].equals("productadd"))
+                    addProduct(parts[1],out);
                 if (parts[0].equals("categoryfetchnames"))
                     fetchCategoriesNames(out);
+
             }
         } catch (IOException e) {
             System.out.println("Отключился клиент " + clientSocket.getInetAddress() + ":" + clientSocket.getPort());

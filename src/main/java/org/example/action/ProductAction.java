@@ -19,21 +19,22 @@ public class ProductAction {
         }
     }
 
-    public void update(Product product) {
+    public String update(Product product) {
         st = dao.update(product);
         if (st == 1) {
-            System.out.println("Продукт успешно обновлен: " + product.getName());
+            return "Продукт успешно обновлен: " + product.getName();
         } else {
-            System.out.println("Ошибка: не удалось обновить продукт.");
+            return "Ошибка: не удалось обновить продукт.";
         }
     }
 
-    public void delete(Product product) {
+    public String delete(int productID) {
+        Product product = dao.fetchById(productID);
         st = dao.delete(product);
         if (st == 1) {
-            System.out.println("Продукт успешно удален: " + product.getName());
+            return "Продукт успешно удален: " + product.getName();
         } else {
-            System.out.println("Ошибка: запись не найдена.");
+            return "Не удалось удалить продукт";
         }
     }
 
@@ -41,9 +42,6 @@ public class ProductAction {
         Product product = dao.fetchById(id);
         if (product.getProductID() == 0) {
             System.out.println("Запись не найдена.");
-        } else {
-            System.out.println("Данные продукта:");
-            System.out.println(product);
         }
     }
 
@@ -58,26 +56,14 @@ public class ProductAction {
 
     public List<Product> fetchAll() {
         List<Product> productList = dao.fetchAll();
-        if (productList.isEmpty()) {
+        if (productList.isEmpty())
             System.out.println("Записи не найдены.");
-        } else {
-            System.out.println("Данные продуктов:");
-            for (Product product : productList) {
-                System.out.println(product);
-            }
-        }
         return productList;
     }
     public List<Product> fetchByCategory(String category) {
         List<Product> productList = dao.fetchByCategory(category);
-        if (productList.isEmpty()) {
+        if (productList.isEmpty())
             System.out.println("Записи не найдены.");
-        } else {
-            System.out.println("Данные продуктов:");
-            for (Product product : productList) {
-                System.out.println(product);
-            }
-        }
         return productList;
     }
 

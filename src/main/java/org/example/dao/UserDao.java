@@ -64,7 +64,6 @@ public class UserDao {
             ps.setInt(4, user.getInfo().getUinfoID());
             ps.setInt(5, user.getUserID());
             st = ps.executeUpdate();
-            System.out.println("updated user info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

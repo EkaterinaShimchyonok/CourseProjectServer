@@ -62,7 +62,6 @@ public class VitaminsDao {
             ps.setDouble(6, vitamins.getB12());
             ps.setInt(7, vitamins.getVitaminsID());
             st = ps.executeUpdate();
-            System.out.println("Updated vitamins info: " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();

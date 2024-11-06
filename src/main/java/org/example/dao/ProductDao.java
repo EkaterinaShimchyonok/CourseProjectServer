@@ -22,13 +22,13 @@ public class ProductDao {
         Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         try {
             int nutrientsID = nutrientsDao.insert(product.getNutrients());
-            int categoryID = categoryDao.insert(product.getCategory());
+            product.setCategory(categoryDao.fetchByName(product.getCategory().getName()));
             String query = "insert into Product(name, is_cooked, nutrients_id, category_id) values(?,?,?,?)";
             ps = con.prepareStatement(query);
             ps.setString(1, product.getName());
             ps.setBoolean(2, product.getIsCooked());
             ps.setInt(3, nutrientsID);
-            ps.setInt(4, categoryID);
+            ps.setInt(4, product.getCategory().getCategoryID());
             st = ps.executeUpdate();
 
             // Используем отдельный Statement для получения последнего вставленного идентификатора
@@ -57,7 +57,6 @@ public class ProductDao {
         con = DatabaseManager.getInstance();
         try {
             nutrientsDao.update(product.getNutrients());
-            categoryDao.update(product.getCategory());
             String query = "update Product set name=?, is_cooked=?, nutrients_id=?, category_id=? where product_id=?";
             ps = con.prepareStatement(query);
             ps.setString(1, product.getName());
@@ -66,7 +65,6 @@ public class ProductDao {
             ps.setInt(4, product.getCategory().getCategoryID());
             ps.setInt(5, product.getProductID());
             st = ps.executeUpdate();
-            System.out.println("updated product info " + st);
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();
@@ -85,7 +83,6 @@ public class ProductDao {
         con = DatabaseManager.getInstance();
         try {
             nutrientsDao.delete(product.getNutrients());
-            categoryDao.delete(product.getCategory());
             String query = "delete from Product where product_id=?";
             ps = con.prepareStatement(query);
             ps.setInt(1, product.getProductID());
