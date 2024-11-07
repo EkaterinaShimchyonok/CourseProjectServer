@@ -1,5 +1,5 @@
 package org.example.action;
-
+import org.example.POJO.Product;
 import org.example.dao.CategoryDao;
 import org.example.POJO.Category;
 
@@ -9,32 +9,31 @@ public class CategoryAction {
     CategoryDao dao = new CategoryDao();
     int st;
 
-    public void insert(Category category) {
+    public String insert(Category category) {
         st = dao.insert(category);
         if (st == 1) {
-            System.out.println("Категория успешно добавлена");
-        } else if (st == -1) {
-            System.out.println("Категория уже существует");
+            return "Категория успешно добавлена: " + category.getName();
         } else {
-            System.out.println("Не удалось добавить категорию");
+            return "Ошибка: не удалось добавить категорию.";
         }
     }
 
-    public void update(Category category) {
+    public String update(Category category) {
         st = dao.update(category);
         if (st == 1) {
-            System.out.println("Категория успешно обновлена");
+            return "Категория успешно обновлена";
         } else {
-            System.out.println("Не удалось обновить категорию");
+            return "Не удалось обновить категорию";
         }
     }
 
-    public void delete(Category category) {
+    public String delete(int categoryID) {
+        Category category = dao.fetchById(categoryID);
         st = dao.delete(category);
         if (st == 1) {
-            System.out.println("Категория успешно удалена");
+            return "Категория успешно удалена: " + category.getName();
         } else {
-            System.out.println("Запись не найдена");
+            return "Не удалось удалить категорию";
         }
     }
 
@@ -55,11 +54,12 @@ public class CategoryAction {
         }
     }
 
-    public void fetchAll() {
+    public List<Category> fetchAll() {
         List<Category> categoryList = dao.fetchAll();
         if (categoryList.isEmpty()) {
             System.out.println("Запись не найдена");
         }
+        return categoryList;
     }
 
     public List<String> fetchCategoryNames() {

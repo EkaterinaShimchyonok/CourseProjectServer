@@ -52,17 +52,14 @@ public class UserDao {
 
 
     public int update(User user) {
+        userInfoDao.update(user.getInfo());
         con = DatabaseManager.getInstance();
         try {
-            userInfoDao.update(user.getInfo());
-
-            String query = "update User set email=?, password=?, is_admin=?, uinfo_id=? where user_id=?";
+            String query = "update User set is_admin=?, uinfo_id=? where user_id=?";
             ps = con.prepareStatement(query);
-            ps.setString(1, user.getEmail());
-            ps.setString(2, user.getPassword());
-            ps.setBoolean(3, user.isAdmin());
-            ps.setInt(4, user.getInfo().getUinfoID());
-            ps.setInt(5, user.getUserID());
+            ps.setBoolean(1, user.isAdmin());
+            ps.setInt(2, user.getInfo().getUinfoID());
+            ps.setInt(3, user.getUserID());
             st = ps.executeUpdate();
         } catch (Exception e) {
             st = -2;

@@ -19,12 +19,12 @@ public class UserAction {
         }
     }
 
-    public void update(User user) {
+    public String update(User user) {
         st = dao.update(user);
         if (st == 1) {
-            System.out.println("Пользователь успешно обновлен");
+            return "Изменения успешно применены";
         } else {
-            System.out.println("Не удалось обновить пользователя");
+            return "Не удалось обновить информацию";
         }
     }
 

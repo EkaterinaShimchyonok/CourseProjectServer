@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.DatabaseManager;
+import org.example.POJO.Nutrients;
 import org.example.POJO.UserInfo;
 
 import java.sql.*;
@@ -52,8 +53,9 @@ public class UserInfoDao {
     }
 
 
-
     public int update(UserInfo user) {
+        Nutrients nuts = nuDao.fetchById(user.getNorm().getNutrientsID());
+        nuDao.update(nuts);
         con = DatabaseManager.getInstance();
         try {
             String query = "update UserInfo set name=?, age=?, is_male=?, height=?, weight=?, activity_level=?, goal=? " +

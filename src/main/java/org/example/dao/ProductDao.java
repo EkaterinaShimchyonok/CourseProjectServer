@@ -2,8 +2,6 @@ package org.example.dao;
 
 import org.example.DatabaseManager;
 import org.example.POJO.Product;
-import org.example.POJO.Nutrients;
-import org.example.POJO.Category;
 
 import java.sql.*;
 import java.util.ArrayList;

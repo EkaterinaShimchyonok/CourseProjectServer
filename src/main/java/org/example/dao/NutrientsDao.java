@@ -84,25 +84,10 @@ public class NutrientsDao {
 
 
 
-    public int update(Nutrients nutrients) {
-        con = DatabaseManager.getInstance();
-        try {
-            macroNutrientsDao.update(nutrients.getMacroNutrients());
-            vitaminsDao.update(nutrients.getVitamins());
-            mineralsDao.update(nutrients.getMinerals());
-            st = 1;
-        } catch (Exception e) {
-            st = -2;
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return st;
+    public void update(Nutrients nutrients) {
+        macroNutrientsDao.update(nutrients.getMacroNutrients());
+        vitaminsDao.update(nutrients.getVitamins());
+        mineralsDao.update(nutrients.getMinerals());
     }
 
     public int delete(Nutrients nutrients) {

@@ -1,6 +1,7 @@
 package org.example;
 
 import com.google.gson.Gson;
+import org.example.POJO.Category;
 import org.example.POJO.Product;
 import org.example.POJO.User;
 import org.example.action.CategoryAction;
@@ -36,6 +37,7 @@ public class ClientHandler implements Runnable {
         if (user.getUserID() != 0) {
             String userJson = new Gson().toJson(user);
             out.println(userJson);
+            System.out.println(userJson);
         } else {
             out.println("Не удалось войти в систему. Попробуйте ещё раз");
         }
@@ -45,15 +47,25 @@ public class ClientHandler implements Runnable {
     void fetchAllUsers(PrintWriter out) {
         List<User> users = uact.fetchAll();
         users.forEach(user -> {
-            System.out.println( user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName());
+            System.out.println(user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName());
             String userString = user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName();
             out.println(userString);
         });
     }
 
+    void fetchAllCategories(PrintWriter out) {
+        List<Category> cats = cact.fetchAll();
+        Gson gson = new Gson();
+        cats.forEach(category -> {
+            String categoryJson = gson.toJson(category);
+            out.println(categoryJson);
+        });
+        out.println("end"); // Указываем конец передачи
+    }
+
     void fetchCategoryProducts(String category, PrintWriter out) {
         List<Product> products;
-        if(category.equals("Все"))
+        if (category.equals("Все"))
             products = pact.fetchAll();
         else
             products = pact.fetchByCategory(category);
@@ -79,6 +91,25 @@ public class ClientHandler implements Runnable {
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
                 " Изменение продукта " + product.getProductID());
     }
+
+    void updateCategory(String jsonCategory, PrintWriter out) {
+        Gson gson = new Gson();
+        Category category = gson.fromJson(jsonCategory, Category.class);
+        System.out.println(jsonCategory);
+        out.println(cact.update(category));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Изменение категории " + category.getCategoryID());
+    }
+
+    void updateUser(String jsonUser, PrintWriter out) {
+        Gson gson = new Gson();
+        User user = gson.fromJson(jsonUser, User.class);
+        String answer = uact.update(user);
+        out.println(answer);
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Обновление пользовательской информации " + user.getEmail());
+    }
+
     void addProduct(String jsonProduct, PrintWriter out) {
         Gson gson = new Gson();
         Product product = gson.fromJson(jsonProduct, Product.class);
@@ -87,10 +118,26 @@ public class ClientHandler implements Runnable {
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
                 " Добавление продукта " + product.getProductID());
     }
+
+    void addCategory(String jsonCategory, PrintWriter out) {
+        Gson gson = new Gson();
+        Category category = gson.fromJson(jsonCategory, Category.class);
+        System.out.println(jsonCategory);
+        out.println(cact.insert(category));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Добавление категории " + category.getCategoryID());
+    }
+
     void deleteProduct(String id, PrintWriter out) {
         out.println(pact.delete(Integer.parseInt(id)));
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
-                " Изменение продукта " + id);
+                " Удаление продукта " + id);
+    }
+
+    void deleteCategory(String id, PrintWriter out) {
+        out.println(cact.delete(Integer.parseInt(id)));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Удаление категории " + id);
     }
 
     @Override
@@ -106,14 +153,26 @@ public class ClientHandler implements Runnable {
                     login(parts, out);
                 if (parts[0].equals("userfetchall"))
                     fetchAllUsers(out);
+                if (parts[0].equals("userupdate"))
+                    updateUser(parts[1], out);
+
+                if (parts[0].equals("categoryupdate"))
+                    updateCategory(parts[1], out);
+                if (parts[0].equals("categorydelete"))
+                    deleteCategory(parts[1], out);
+                if (parts[0].equals("categoryadd"))
+                    addCategory(parts[1], out);
+                if (parts[0].equals("categoryfetchall"))
+                    fetchAllCategories(out);
+
                 if (parts[0].equals("productfetchcat"))
-                    fetchCategoryProducts(parts[1],out);
+                    fetchCategoryProducts(parts[1], out);
                 if (parts[0].equals("productupdate"))
-                    updateProduct(parts[1],out);
+                    updateProduct(parts[1], out);
                 if (parts[0].equals("productdelete"))
-                    deleteProduct(parts[1],out);
+                    deleteProduct(parts[1], out);
                 if (parts[0].equals("productadd"))
-                    addProduct(parts[1],out);
+                    addProduct(parts[1], out);
                 if (parts[0].equals("categoryfetchnames"))
                     fetchCategoriesNames(out);
 
