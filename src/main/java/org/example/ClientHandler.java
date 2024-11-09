@@ -46,11 +46,12 @@ public class ClientHandler implements Runnable {
 
     void fetchAllUsers(PrintWriter out) {
         List<User> users = uact.fetchAll();
+        Gson gson = new Gson();
         users.forEach(user -> {
-            System.out.println(user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName());
-            String userString = user.getEmail() + ";" + user.isAdmin() + ";" + user.getInfo().getName();
-            out.println(userString);
+            String userJson = gson.toJson(user);
+            out.println(userJson);
         });
+        out.println("end"); // Указываем конец передачи
     }
 
     void fetchAllCategories(PrintWriter out) {
@@ -101,10 +102,10 @@ public class ClientHandler implements Runnable {
                 " Изменение категории " + category.getCategoryID());
     }
 
-    void updateUser(String jsonUser, PrintWriter out) {
+    void updateAdmin(String jsonUser, PrintWriter out) {
         Gson gson = new Gson();
         User user = gson.fromJson(jsonUser, User.class);
-        String answer = uact.update(user);
+        String answer = uact.updateAdmin(user);
         out.println(answer);
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
                 " Обновление пользовательской информации " + user.getEmail());
@@ -140,6 +141,12 @@ public class ClientHandler implements Runnable {
                 " Удаление категории " + id);
     }
 
+    void deleteUser(String id, PrintWriter out) {
+        out.println(uact.delete(Integer.parseInt(id)));
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Удаление пользователя " + id);
+    }
+
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -153,8 +160,10 @@ public class ClientHandler implements Runnable {
                     login(parts, out);
                 if (parts[0].equals("userfetchall"))
                     fetchAllUsers(out);
-                if (parts[0].equals("userupdate"))
-                    updateUser(parts[1], out);
+                if (parts[0].equals("userupdateadmin"))
+                    updateAdmin(parts[1], out);
+                if (parts[0].equals("userdelete"))
+                    deleteUser(parts[1], out);
 
                 if (parts[0].equals("categoryupdate"))
                     updateCategory(parts[1], out);

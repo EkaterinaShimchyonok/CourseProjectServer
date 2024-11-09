@@ -1,5 +1,6 @@
 package org.example.action;
 
+import org.example.POJO.Product;
 import org.example.dao.UserDao;
 import org.example.POJO.User;
 import java.util.List;
@@ -11,7 +12,7 @@ public class UserAction {
     public String insert(User user) {
         st = dao.insert(user);
         if (st == 1) {
-            return "Регистрация прошла успешно. Войдите в аккаунт " + user.getEmail();
+            return "Регистрация прошла успешно" ;
         } else if (st == -1) {
             return "Вы уже зарегистрированы в системе. Войдите в аккаунт " + user.getEmail();
         } else {
@@ -28,12 +29,22 @@ public class UserAction {
         }
     }
 
-    public void delete(User user) {
+    public String updateAdmin(User user) {
+        st = dao.updateAdmin(user);
+        if (st == 1) {
+            return "Изменения успешно применены";
+        } else {
+            return "Не удалось обновить информацию";
+        }
+    }
+
+    public String delete(int id) {
+        User user = dao.fetchById(id);
         st = dao.delete(user);
         if (st == 1) {
-            System.out.println("Пользователь успешно удален");
+            return "Пользователь успешно удален: " + user.getEmail();
         } else {
-            System.out.println("Запись не найдена");
+            return "Не удалось удалить пользователя";
         }
     }
 
