@@ -212,7 +212,7 @@ public class UserDao {
         return users;
     }
 
-    public User fetchByEmailPassw(String email, String password) {
+    public User fetchByEmailPassword(String email, String password) {
         User user = new User();
         con = DatabaseManager.getInstance();
         try {

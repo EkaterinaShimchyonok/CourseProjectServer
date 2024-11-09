@@ -1,47 +1,67 @@
 package org.example.action;
-import org.example.POJO.Product;
-import org.example.dao.CategoryDao;
-import org.example.POJO.Category;
 
+import com.google.gson.Gson;
+import org.example.ClientHandler;
+import org.example.POJO.Category;
+import org.example.dao.CategoryDao;
+
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.List;
 
 public class CategoryAction {
-    CategoryDao dao = new CategoryDao();
+    CategoryDao dao;
     int st;
+    Socket clientSocket;
 
-    public String insert(Category category) {
+    public CategoryAction() {
+        clientSocket = ClientHandler.getClientSocket();
+        dao = new CategoryDao();
+    }
+
+    public void insert(String jsonCategory, PrintWriter out) {
+        Gson gson = new Gson();
+        Category category = gson.fromJson(jsonCategory, Category.class);
         st = dao.insert(category);
-        if (st == 1) {
-            return "Категория успешно добавлена: " + category.getName();
-        } else {
-            return "Ошибка: не удалось добавить категорию.";
-        }
+        if (st == 1)
+            out.println("Категория успешно добавлена: " + category.getName());
+        else
+            out.println("Ошибка: не удалось добавить категорию.");
+
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Добавление категории " + category.getCategoryID());
     }
 
-    public String update(Category category) {
+    public void update(String jsonCategory, PrintWriter out) {
+        Gson gson = new Gson();
+        Category category = gson.fromJson(jsonCategory, Category.class);
+        System.out.println(jsonCategory);
         st = dao.update(category);
-        if (st == 1) {
-            return "Категория успешно обновлена";
-        } else {
-            return "Не удалось обновить категорию";
-        }
+        if (st == 1)
+            out.println("Категория успешно обновлена");
+        else
+            out.println("Не удалось обновить категорию");
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Изменение категории " + category.getCategoryID());
     }
 
-    public String delete(int categoryID) {
-        Category category = dao.fetchById(categoryID);
+
+    public void delete(String id, PrintWriter out) {
+        Category category = dao.fetchById(Integer.parseInt(id));
         st = dao.delete(category);
-        if (st == 1) {
-            return "Категория успешно удалена: " + category.getName();
-        } else {
-            return "Не удалось удалить категорию";
-        }
+        if (st == 1)
+            out.println("Категория успешно удалена: " + category.getName());
+        else
+            out.println("Не удалось удалить категорию");
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Удаление категории " + id);
     }
 
     public void fetchById(int id) {
         Category category = dao.fetchById(id);
-        if (category.getCategoryID() == 0) {
+        if (category.getCategoryID() == 0)
             System.out.println("Запись не найдена");
-        } else {
+        else {
             System.out.println("Данные категории:");
             System.out.println(category);
         }
@@ -49,24 +69,24 @@ public class CategoryAction {
 
     public void fetchByName(String name) {
         Category category = dao.fetchByName(name);
-        if (category == null) {
+        if (category == null)
             System.out.println("Запись не найдена");
-        }
     }
 
-    public List<Category> fetchAll() {
+    public void fetchAll(PrintWriter out) {
         List<Category> categoryList = dao.fetchAll();
-        if (categoryList.isEmpty()) {
-            System.out.println("Запись не найдена");
-        }
-        return categoryList;
+        Gson gson = new Gson();
+        categoryList.forEach(category -> {
+            String categoryJson = gson.toJson(category);
+            out.println(categoryJson);
+        });
+        out.println("end"); // Указываем конец передачи
     }
 
-    public List<String> fetchCategoryNames() {
+
+    public void fetchNames(PrintWriter out) {
         List<String> categoryNames = dao.fetchCategoryNames();
-        if (categoryNames.isEmpty()) {
-            System.out.println("Категории не найдены.");
-        }
-        return categoryNames;
+        categoryNames.forEach(out::println);
+        out.println("end");
     }
 }
