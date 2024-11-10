@@ -19,6 +19,9 @@ public class ProductCommand implements Command {
             case "fetchcat":
                 productAction.fetchByCategory(param, out);
                 break;
+            case "fetchall":
+                productAction.fetchAll(out);
+                break;
             case "update":
                 productAction.update(param, out);
                 break;

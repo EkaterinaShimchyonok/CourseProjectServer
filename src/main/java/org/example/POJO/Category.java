@@ -5,7 +5,9 @@ public class Category {
     String name;
     String image;
 
-    public Category(){}
+    public Category(){
+        image = "products.png";
+    }
 
     public Category(int categoryID, String name, String image) {
         this.categoryID = categoryID;

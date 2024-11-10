@@ -71,17 +71,20 @@ public class ProductAction {
         }
     }
 
-    public List<Product> fetchAll() {
-        List<Product> productList = dao.fetchAll();
-        if (productList.isEmpty())
-            System.out.println("Записи не найдены.");
-        return productList;
+    public void fetchAll(PrintWriter out) {
+        List<Product> products = dao.fetchAll();
+        Gson gson = new Gson();
+        products.forEach(product -> {
+            String productJson = gson.toJson(product);
+            out.println(productJson);
+        });
+        out.println("end"); // Указываем конец передачи
     }
 
     public void fetchByCategory(String category, PrintWriter out) {
         List<Product> products;
         if (category.equals("Все"))
-            products = fetchAll();
+            products = dao.fetchAll();
         else
             products = dao.fetchByCategory(category);
         Gson gson = new Gson();

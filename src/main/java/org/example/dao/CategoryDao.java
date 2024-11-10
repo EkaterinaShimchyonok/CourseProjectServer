@@ -65,7 +65,13 @@ public class CategoryDao {
     public int delete(Category category) {
         con = DatabaseManager.getInstance();
         try {
-            String query = "delete from Category where category_id=?";
+            String query = "delete from Product where category_id=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, category.getCategoryID());
+            st = ps.executeUpdate();
+            System.out.println("deleted category products " + st);
+
+            query = "delete from Category where category_id=?";
             ps = con.prepareStatement(query);
             ps.setInt(1, category.getCategoryID());
             st = ps.executeUpdate();
