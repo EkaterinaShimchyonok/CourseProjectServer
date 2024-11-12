@@ -6,13 +6,12 @@ import org.example.POJO.MacroNutrients;
 import java.sql.*;
 
 public class MacroNutrientsDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
 
     public int insert(MacroNutrients macroNutrients) {
-        con = DatabaseManager.getInstance();
         Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         int newId = -1; // Инициализация переменной для возвращаемого ID
         try {
@@ -47,7 +46,6 @@ public class MacroNutrientsDao {
 
 
     public int update(MacroNutrients macroNutrients) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "update MacroNutrients set calories=?, proteins=?, fats=?, carbs=? where macron_id=?";
             ps = con.prepareStatement(query);
@@ -63,7 +61,6 @@ public class MacroNutrientsDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -72,7 +69,6 @@ public class MacroNutrientsDao {
     }
 
     public int delete(MacroNutrients macroNutrients) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "delete from MacroNutrients where macron_id=?";
             ps = con.prepareStatement(query);
@@ -85,7 +81,6 @@ public class MacroNutrientsDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

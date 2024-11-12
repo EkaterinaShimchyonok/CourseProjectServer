@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
@@ -16,7 +16,6 @@ public class ProductDao {
     private final CategoryDao categoryDao = new CategoryDao();
 
     public int insert(Product product) {
-        con = DatabaseManager.getInstance();
         Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         try {
             int nutrientsID = nutrientsDao.insert(product.getNutrients());
@@ -43,7 +42,6 @@ public class ProductDao {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
                 if (stmt != null) stmt.close(); // Закрываем Statement
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -52,7 +50,6 @@ public class ProductDao {
     }
 
     public int update(Product product) {
-        con = DatabaseManager.getInstance();
         try {
             nutrientsDao.update(product.getNutrients());
             String query = "update Product set name=?, is_cooked=?, nutrients_id=?, category_id=? where product_id=?";
@@ -69,7 +66,6 @@ public class ProductDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -78,7 +74,6 @@ public class ProductDao {
     }
 
     public int delete(Product product) {
-        con = DatabaseManager.getInstance();
         try {
             nutrientsDao.delete(product.getNutrients());
             String query = "delete from Product where product_id=?";
@@ -92,7 +87,6 @@ public class ProductDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -102,7 +96,6 @@ public class ProductDao {
 
     public Product fetchById(int id) {
         Product product = new Product();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Product where product_id=?";
             ps = con.prepareStatement(query);
@@ -121,7 +114,6 @@ public class ProductDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -131,7 +123,6 @@ public class ProductDao {
 
     public List<Product> fetchAll() {
         List<Product> products = new ArrayList<>();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Product";
             ps = con.prepareStatement(query);
@@ -151,7 +142,6 @@ public class ProductDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -161,7 +151,6 @@ public class ProductDao {
 
     public List<Product> fetchByName(String name) {
         List<Product> products = new ArrayList<>();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Product where name = ?";
             ps = con.prepareStatement(query);
@@ -182,7 +171,6 @@ public class ProductDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -192,7 +180,6 @@ public class ProductDao {
 
     public List<Product> fetchByCategory(String categoryName) {
         List<Product> products = new ArrayList<>();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Product p join Category c on p.category_id = c.category_id where c.name=?";
             ps = con.prepareStatement(query);
@@ -213,7 +200,6 @@ public class ProductDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

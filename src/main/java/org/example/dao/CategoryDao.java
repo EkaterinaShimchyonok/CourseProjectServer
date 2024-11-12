@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
 
     public int insert(Category category) {
-        con = DatabaseManager.getInstance();
+
         try {
             String query = "insert into Category(name, image) values(?,?)";
             ps = con.prepareStatement(query);
@@ -31,7 +31,6 @@ public class CategoryDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -40,7 +39,6 @@ public class CategoryDao {
     }
 
     public int update(Category category) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "update Category set name=?, image=? where category_id=?";
             ps = con.prepareStatement(query);
@@ -54,7 +52,6 @@ public class CategoryDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -63,7 +60,6 @@ public class CategoryDao {
     }
 
     public int delete(Category category) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "delete from Product where category_id=?";
             ps = con.prepareStatement(query);
@@ -82,7 +78,6 @@ public class CategoryDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -92,7 +87,6 @@ public class CategoryDao {
 
     public Category fetchById(int id) {
         Category category = new Category();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Category where category_id=?";
             ps = con.prepareStatement(query);
@@ -109,7 +103,6 @@ public class CategoryDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -119,7 +112,6 @@ public class CategoryDao {
 
     public List<Category> fetchAll() {
         List<Category> categories = new ArrayList<>();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Category";
             ps = con.prepareStatement(query);
@@ -137,7 +129,6 @@ public class CategoryDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -146,7 +137,6 @@ public class CategoryDao {
     }
     public List<String> fetchCategoryNames() {
         List<String> categoryNames = new ArrayList<>();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select name from Category";
             ps = con.prepareStatement(query);
@@ -160,7 +150,6 @@ public class CategoryDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -170,7 +159,6 @@ public class CategoryDao {
 
     public Category fetchByName(String name) {
         Category category = new Category();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Category where name = ?";
             ps = con.prepareStatement(query);
@@ -187,7 +175,6 @@ public class CategoryDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

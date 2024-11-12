@@ -6,7 +6,7 @@ import org.example.POJO.Nutrients;
 import java.sql.*;
 
 public class NutrientsDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
@@ -16,7 +16,6 @@ public class NutrientsDao {
     private final MineralsDao mineralsDao = new MineralsDao();
 
     public int insertNorm(Nutrients nutrients) {
-        con = DatabaseManager.getInstance();
         int id=0; // Инициализация переменной для возвращаемого ID
         Statement stmt = null;
         try {
@@ -47,7 +46,6 @@ public class NutrientsDao {
     }
 
     public int insert(Nutrients nutrients) {
-        con = DatabaseManager.getInstance();
         int newId = -1; // Инициализация переменной для возвращаемого ID
         Statement stmt = null;
         try {
@@ -91,7 +89,6 @@ public class NutrientsDao {
     }
 
     public int delete(Nutrients nutrients) {
-        con = DatabaseManager.getInstance();
         try {
             macroNutrientsDao.delete(nutrients.getMacroNutrients());
             vitaminsDao.delete(nutrients.getVitamins());
@@ -108,7 +105,6 @@ public class NutrientsDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -118,7 +114,6 @@ public class NutrientsDao {
 
     public Nutrients fetchById(int id) {
         Nutrients nutrients = new Nutrients();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from Nutrients where nutrients_id=?";
             ps = con.prepareStatement(query);
@@ -136,7 +131,6 @@ public class NutrientsDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

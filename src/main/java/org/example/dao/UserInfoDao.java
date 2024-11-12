@@ -7,14 +7,13 @@ import org.example.POJO.UserInfo;
 import java.sql.*;
 
 public class UserInfoDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
     NutrientsDao nuDao = new NutrientsDao();
 
     public int insert(UserInfo user) {
-        con = DatabaseManager.getInstance();
         Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         try {
             int normID = nuDao.insertNorm(user.getNorm());
@@ -56,7 +55,6 @@ public class UserInfoDao {
     public int update(UserInfo user) {
         Nutrients nuts = nuDao.fetchById(user.getNorm().getNutrientsID());
         nuDao.update(nuts);
-        con = DatabaseManager.getInstance();
         try {
             String query = "update UserInfo set name=?, age=?, is_male=?, height=?, weight=?, activity_level=?, goal=? " +
                     "where uinfo_id=?";
@@ -75,7 +73,6 @@ public class UserInfoDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -84,7 +81,6 @@ public class UserInfoDao {
     }
 
     public int delete(UserInfo user) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "delete from UserInfo where uinfo_id=? ";
             ps = con.prepareStatement(query);
@@ -97,7 +93,6 @@ public class UserInfoDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -107,7 +102,6 @@ public class UserInfoDao {
 
     public UserInfo fetchById(int id) {
         UserInfo user = new UserInfo();
-        con = DatabaseManager.getInstance();
         try {
             String query = "select * from UserInfo where uinfo_id=?";
             ps = con.prepareStatement(query);
@@ -130,7 +124,6 @@ public class UserInfoDao {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

@@ -6,13 +6,12 @@ import org.example.POJO.Vitamins;
 import java.sql.*;
 
 public class VitaminsDao {
-    Connection con = null;
+    Connection con = DatabaseManager.getInstance();
     PreparedStatement ps = null;
     ResultSet rs = null;
     int st; // статус
 
     public int insert(Vitamins vitamins) {
-        con = DatabaseManager.getInstance();
         Statement stmt = null; // добавляем Statement для выполнения SELECT last_insert_rowid()
         int newId = -1; // Инициализация переменной для возвращаемого ID
         try {
@@ -50,7 +49,6 @@ public class VitaminsDao {
 
 
     public int update(Vitamins vitamins) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "UPDATE Vitamins SET a=?, d=?, e=?, k=?, c=?, b12=? WHERE vitamins_id=?";
             ps = con.prepareStatement(query);
@@ -68,7 +66,6 @@ public class VitaminsDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -77,7 +74,6 @@ public class VitaminsDao {
     }
 
     public int delete(Vitamins vitamins) {
-        con = DatabaseManager.getInstance();
         try {
             String query = "DELETE FROM Vitamins WHERE vitamins_id=?";
             ps = con.prepareStatement(query);
@@ -90,7 +86,6 @@ public class VitaminsDao {
         } finally {
             try {
                 if (ps != null) ps.close();
-                if (con != null) con.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
