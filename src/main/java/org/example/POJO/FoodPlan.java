@@ -14,13 +14,23 @@ public class FoodPlan {
     double totalCal;
 
     public FoodPlan() {
+        planID = 0;
         norm = new Nutrients();
         products = new ArrayList<>();
         weights = new ArrayList<>();
-
         Date today = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         date = formatter.format(today);
+    }
+
+    public FoodPlan(int uid)
+    {
+        this.userID = uid;
+        Date today = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        date = formatter.format(today);
+        products = new ArrayList<>();
+        weights = new ArrayList<>();
     }
 
     public int getPlanID() {

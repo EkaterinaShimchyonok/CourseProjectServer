@@ -3,6 +3,8 @@ package org.example.dao;
 import org.example.DatabaseManager;
 import org.example.POJO.*;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlanDao {
     Connection con = DatabaseManager.getInstance();
@@ -15,7 +17,8 @@ public class PlanDao {
 
     int st; // статус
 
-    public int insert(FoodPlan plan) {
+    public FoodPlan insert(int uid) {
+        FoodPlan plan = new FoodPlan(uid);
         Statement stmt = null;
         int newId = -1;
         try {
@@ -31,6 +34,10 @@ public class PlanDao {
                 newId = rs.getInt("id");
                 plan.setPlanID(newId);
             }
+            plan.setPlanID(newId);
+            User user = userDao.fetchById(plan.getUserID());
+            UserInfo userInfo = userInfoDao.fetchById(user.getUserID());
+            plan.setNorm(userInfo.getNorm());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -42,7 +49,7 @@ public class PlanDao {
                 ex.printStackTrace();
             }
         }
-        return newId;
+        return plan;
     }
 
 
@@ -71,8 +78,7 @@ public class PlanDao {
                 User user = userDao.fetchById(plan.getUserID());
                 UserInfo userInfo = userInfoDao.fetchById(user.getUserID());
                 plan.setNorm(userInfo.getNorm());
-            } else
-                insert(plan);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -84,6 +90,29 @@ public class PlanDao {
             }
         }
         return plan;
+    }
+
+    public Map<Double, String> fetchCalories(int uid) {
+        Map<Double, String> map = new HashMap<Double, String>();
+        try {
+            String query = "select  total_cal, date from FoodPlan where user_id=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, uid);
+            rs = ps.executeQuery();
+
+            while (rs.next())
+                map.put(rs.getDouble("total_cal"), rs.getString("date"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return map;
     }
 
     public int update(FoodPlan plan) {

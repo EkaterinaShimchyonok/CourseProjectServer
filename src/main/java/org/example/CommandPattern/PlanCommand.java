@@ -19,14 +19,17 @@ public class PlanCommand implements Command {
             case "fetch":
                 planAction.fetch(param, out);
                 break;
-//            case "fetchall":
-//                planAction.fetchAll(out);
-//                break;
+            case "insert":
+                planAction.insert(param, out);
+                break;
+            case "total calories":
+                planAction.fetchCalories(param, out);
+                break;
             case "update":
                 planAction.update(param, out);
                 break;
             default:
-                out.println("Неизвестный метод продукта");
+                out.println("Неизвестный метод плана питания");
         }
     }
 }

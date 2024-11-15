@@ -8,6 +8,7 @@ import org.example.dao.PlanDao;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Map;
 
 public class PlanAction {
     PlanDao dao;
@@ -27,6 +28,34 @@ public class PlanAction {
         System.out.println(planJson);
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
                 " Получение плана питания пользователя: " + req_parts[0]);
+    }
+
+    public void insert(String req, PrintWriter out) {
+        FoodPlan plan = dao.insert(Integer.parseInt(req));
+        String planJson = new Gson().toJson(plan);
+        out.println(planJson);
+        System.out.println(planJson);
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Добавление актуального плана питания пользователя: " + req);
+    }
+
+    public void fetchCalories(String req, PrintWriter out) {
+        Map<Double, String> map = dao.fetchCalories(Integer.parseInt(req));
+        System.out.println(map);
+        // Отправка калорий
+        for (Map.Entry<Double, String> entry : map.entrySet()) {
+            out.println(entry.getKey());
+        }
+        out.println("cal end");
+
+        // Отправка дат
+        for (Map.Entry<Double, String> entry : map.entrySet()) {
+            out.println(entry.getValue());
+        }
+        out.println("dat end");
+
+        System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
+                " Получение общей калорийности по дням пользователя " + req);
     }
 
     public void update(String jsonPlan, PrintWriter out) {

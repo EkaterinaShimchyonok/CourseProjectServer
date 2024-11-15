@@ -9,7 +9,6 @@ public class ServerApp {
         } else {
             System.out.println("Не удалось подключиться к базе данных.");
         }
-
         Server server = new Server();
         server.start();
 
