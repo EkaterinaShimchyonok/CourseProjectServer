@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.example.ClientHandler;
 import org.example.dao.UserDao;
 import org.example.POJO.User;
+import org.example.dao.UserInfoDao;
 
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -54,7 +55,10 @@ public class UserAction {
     public void update(String jsonUser, PrintWriter out) {
         Gson gson = new Gson();
         User user = gson.fromJson(jsonUser, User.class);
-        st = dao.update(user);
+        System.out.println(jsonUser);
+
+        UserInfoDao dao = new UserInfoDao();
+        st = dao.update(user.getInfo());
         if (st == 1)
             out.println("Изменения успешно применены");
         else
@@ -86,27 +90,6 @@ public class UserAction {
         }
         System.out.println(clientSocket.getInetAddress() + ":" + clientSocket.getPort() +
                 " Удаление пользователя " + id);
-    }
-
-    public void fetchById(int id) {
-        User user = dao.fetchById(id);
-        if (user.getUserID() == 0) {
-            System.out.println("Запись не найдена");
-        }
-    }
-
-    public void fetchByName(String name) {
-        List<User> userList = dao.fetchByName(name);
-        if (userList.isEmpty()) {
-            System.out.println("Запись не найдена");
-        }
-    }
-
-    public void fetchByAdmin(Boolean admin) {
-        List<User> userList = dao.fetchByAdmin(admin);
-        if (userList.isEmpty()) {
-            System.out.println("Запись не найдена");
-        }
     }
 
     public void fetchAll(PrintWriter out) {

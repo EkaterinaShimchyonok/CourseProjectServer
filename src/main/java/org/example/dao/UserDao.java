@@ -69,27 +69,6 @@ public class UserDao {
         return st;
     }
 
-    public int update(User user) {
-        userInfoDao.update(user.getInfo());
-        try {
-            String query = "update User set is_admin=?, uinfo_id=? where user_id=?";
-            ps = con.prepareStatement(query);
-            ps.setBoolean(1, user.isAdmin());
-            ps.setInt(2, user.getInfo().getUinfoID());
-            ps.setInt(3, user.getUserID());
-            st = ps.executeUpdate();
-        } catch (Exception e) {
-            st = -2;
-            e.printStackTrace();
-        } finally {
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return st;
-    }
 
     public int delete(User user) {
         try {

@@ -55,22 +55,6 @@ public class ProductAction {
                 " Удаление продукта " + id);
     }
 
-    public void fetchById(int id) {
-        Product product = dao.fetchById(id);
-        if (product.getProductID() == 0) {
-            System.out.println("Запись не найдена.");
-        }
-    }
-
-    public void fetchByName(String name) {
-        List<Product> productList = dao.fetchByName(name);
-        if (productList.isEmpty()) {
-            System.out.println("Запись не найдена.");
-        } else {
-            System.out.println("Продукты отправлены");
-        }
-    }
-
     public void fetchAll(PrintWriter out) {
         List<Product> products = dao.fetchAll();
         Gson gson = new Gson();

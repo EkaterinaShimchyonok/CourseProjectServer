@@ -57,21 +57,6 @@ public class CategoryAction {
                 " Удаление категории " + id);
     }
 
-    public void fetchById(int id) {
-        Category category = dao.fetchById(id);
-        if (category.getCategoryID() == 0)
-            System.out.println("Запись не найдена");
-        else {
-            System.out.println("Данные категории:");
-            System.out.println(category);
-        }
-    }
-
-    public void fetchByName(String name) {
-        Category category = dao.fetchByName(name);
-        if (category == null)
-            System.out.println("Запись не найдена");
-    }
 
     public void fetchAll(PrintWriter out) {
         List<Category> categoryList = dao.fetchAll();

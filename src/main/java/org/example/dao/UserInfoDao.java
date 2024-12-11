@@ -1,7 +1,6 @@
 package org.example.dao;
 
 import org.example.DatabaseManager;
-import org.example.POJO.Nutrients;
 import org.example.POJO.UserInfo;
 
 import java.sql.*;
@@ -53,8 +52,7 @@ public class UserInfoDao {
 
 
     public int update(UserInfo user) {
-        Nutrients nuts = nuDao.fetchById(user.getNorm().getNutrientsID());
-        nuDao.update(nuts);
+        nuDao.update(user.getNorm());
         try {
             String query = "update UserInfo set name=?, age=?, is_male=?, height=?, weight=?, activity_level=?, goal=? " +
                     "where uinfo_id=?";
@@ -67,6 +65,8 @@ public class UserInfoDao {
             ps.setInt(6, user.getActivityLevel());
             ps.setDouble(7, user.getGoal());
             ps.setInt(8, user.getUinfoID());
+
+            st = ps.executeUpdate();
         } catch (Exception e) {
             st = -2;
             e.printStackTrace();
@@ -75,6 +75,7 @@ public class UserInfoDao {
                 if (ps != null) ps.close();
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                st = -2;
             }
         }
         return st;
